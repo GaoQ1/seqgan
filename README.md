@@ -1,5 +1,5 @@
 ## SeqGAN
-通过SeqGAN生成小黄鸡式的对话。算法的细节请阅读[paper](https://arxiv.org/abs/1609.05473)
+通过SeqGAN生成小黄鸡式的对话。细节请阅读[paper](https://arxiv.org/abs/1609.05473)
 
 ## 训练
 ```

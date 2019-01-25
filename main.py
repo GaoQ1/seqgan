@@ -37,7 +37,6 @@ trainer = Trainer(B, T, g_E, g_H, d_E, d_H, d_dropout,
     g_lr=g_lr, d_lr=d_lr, n_sample=n_sample, generate_samples=generate_samples)
 
 
-"""
 # Pretraining for adversarial training 对抗训练的pretrain
 trainer.pre_train(
     g_epochs=g_pre_epochs, d_epochs=d_pre_epochs,
@@ -53,7 +52,6 @@ trainer.train(steps=1, g_steps=1, head=10,
               g_weights_path=g_weights_path, d_weights_path=d_weights_path)
 
 trainer.save(g_weights_path, d_weights_path)
-"""
 
 
 trainer.load(g_weights_path,
