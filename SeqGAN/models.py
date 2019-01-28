@@ -61,12 +61,12 @@ class Generator():
         h_in = tf.placeholder(tf.float32, shape=(None, self.H))
         c_in = tf.placeholder(tf.float32, shape=(None, self.H))
         action = tf.placeholder(tf.float32, shape=(None, self.V)) # onehot (B, V)
-        reward  =tf.placeholder(tf.float32, shape=(None, ))
+        reward  =tf.placeholder(tf.float32, shape=(None, )) # (B, )每一个batch的reward
 
         self.layers = []
 
         embedding = Embedding(self.V, self.E, mask_zero=True, name='Embedding')
-        out = embedding(state_in) # (B, 1, E)
+        out = embedding(state_in) # (B, 1, E) 将state_in输入embedding
         self.layers.append(embedding)
 
         lstm = LSTM(self.H, return_state=True, name='LSTM')
