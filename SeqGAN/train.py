@@ -15,8 +15,7 @@ class Trainer(object):
     '''
     Manage training
     '''
-    def __init__(self, B, T, g_E, g_H, d_E, d_H, d_dropout, g_lr=1e-3, d_lr=1e-3,
-        n_sample=16, generate_samples=10000, init_eps=0.1):
+    def __init__(self, B, T, g_E, g_H, d_E, d_H, d_dropout, path_pos, path_neg, g_lr=1e-3, d_lr=1e-3, n_sample=16, generate_samples=10000, init_eps=0.1):
         self.B, self.T = B, T
         self.g_E, self.g_H = g_E, g_H
         self.d_E, self.d_H = d_E, d_H
@@ -26,13 +25,11 @@ class Trainer(object):
         self.eps = init_eps
         self.init_eps = init_eps
         self.top = os.getcwd()
-        self.path_pos = os.path.join(self.top, 'data', 'train.txt')
-        self.path_neg = os.path.join(self.top, 'data', 'save', 'generated_sentences.txt')
+        self.path_pos = path_pos
+        self.path_neg = path_neg
         
         self.g_data = GeneratorPretrainingGenerator(self.path_pos, B=B, T=T, min_count=1) # next方法产生x, y_true数据; 前面一段数据预测后面一段数据
-
-        if os.path.exists(self.path_neg):
-            self.d_data = DiscriminatorGenerator(path_pos=self.path_pos, path_neg=self.path_neg, B=self.B, shuffle=True) # next方法产生 pos数据和neg数据
+        self.d_data = DiscriminatorGenerator(path_pos=self.path_pos, path_neg=self.path_neg, B=self.B, shuffle=True) # next方法产生 pos数据和neg数据
 
         self.V = self.g_data.V
         self.agent = Agent(sess, B, self.V, g_E, g_H, g_lr)
@@ -107,7 +104,7 @@ class Trainer(object):
     def load_pre_train_d(self, d_pre_path):
         self.discriminator.load_weights(d_pre_path)
 
-    def reflect_pre_train(self): # to read
+    def reflect_pre_train(self):
         i = 0
         for layer in self.generator_pre.layers:
             if len(layer.get_weights()) != 0:
