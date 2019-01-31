@@ -28,7 +28,7 @@ class Trainer(object):
         self.path_pos = path_pos
         self.path_neg = path_neg
         
-        self.g_data = GeneratorPretrainingGenerator(self.path_pos, B=B, T=T, min_count=1) # next方法产生x, y_true数据; 前面一段数据预测后面一段数据
+        self.g_data = GeneratorPretrainingGenerator(self.path_pos, B=B, T=T, min_count=1) # next方法产生x, y_true数据; 都是同一个数据，比如[BOS, 8, 10, 6, 3, EOS]预测[8, 10, 6, 3, EOS]
         self.d_data = DiscriminatorGenerator(path_pos=self.path_pos, path_neg=self.path_neg, B=self.B, shuffle=True) # next方法产生 pos数据和neg数据
 
         self.V = self.g_data.V
@@ -41,10 +41,9 @@ class Trainer(object):
 
         self.generator_pre = GeneratorPretraining(self.V, g_E, g_H)
 
-    def pre_train(self, g_epochs=3, d_epochs=1, g_pre_path=None ,d_pre_path=None,
-        g_lr=1e-3, d_lr=1e-3):
-
+    def pre_train(self, g_epochs=3, d_epochs=1, g_pre_path=None ,d_pre_path=None, g_lr=1e-3, d_lr=1e-3):
         self.pre_train_generator(g_epochs=g_epochs, g_pre_path=g_pre_path, lr=g_lr)
+
         self.pre_train_discriminator(d_epochs=d_epochs, d_pre_path=d_pre_path, lr=d_lr)
 
     def pre_train_generator(self, g_epochs=3, g_pre_path=None, lr=1e-3):
@@ -129,6 +128,7 @@ class Trainer(object):
                 self.env.reset()
                 for t in range(self.T):
                     state = self.env.get_state()
+
                     action = self.agent.act(state, epsilon=0.0)
 
                     _next_state, reward, is_episode_end, _info = self.env.step(action)
@@ -176,7 +176,6 @@ class Trainer(object):
     def test(self):
         x, y = self.d_data.next()
         pred = self.discriminator.predict(x)
-
 
         for i in range(self.B):
             txt = [self.g_data.id2word[id] for id in x[i].tolist()]

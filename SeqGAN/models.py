@@ -238,14 +238,17 @@ class Generator():
             output_file: str, path
         '''
         sentences=[]
+
         for _ in range(num // self.B + 1):
             actions = self.sampling_sentence(T)
             actions_list = actions.tolist()
 
             for sentence_id in actions_list:
-                sentence = [g_data.id2word[action] for action in sentence_id]
+                sentence = [g_data.id2word[action] for action in sentence_id if action != 0 and action != 2]
                 sentences.append(sentence)
+
         output_str = ''
+
         for i in range(num):
             output_str += ' '.join(sentences[i]) + '\n'
         with open(output_file, 'w', encoding='utf-8') as f:

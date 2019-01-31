@@ -184,9 +184,9 @@ class GeneratorPretrainingGenerator(Sequence):
                 idx = self.shuffled_indices[i]
             else:
                 idx = i
-            sentence = linecache.getline(self.path, idx) # str
-            words = sentence.strip().split()  # list of str
-            ids = sentence_to_ids(self.vocab, words) # list of ids
+            sentence = linecache.getline(self.path, idx)
+            words = sentence.strip().split()
+            ids = sentence_to_ids(self.vocab, words)
 
             ids_x, ids_y_true = [], []
 
@@ -200,6 +200,7 @@ class GeneratorPretrainingGenerator(Sequence):
             y_true.append(ids_y_true)
 
             max_length = max(max_length, len(ids_x))
+
 
         if self.T is not None:
             max_length = self.T
